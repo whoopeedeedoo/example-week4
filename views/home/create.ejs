@@ -1,0 +1,267 @@
+<div style="float:left; width:600px;" class="container" ng-controller="con">
+  <header>
+    <h1>Create post</h1>
+  </header>
+  <hr/>
+  <form action="/post" method="POST">
+    <div class="row">
+      <label for="title">Title</label>
+    </div>
+    <div>
+      <input class="form-control" id="title" type="text" name="title" value="title" ng-model="t.input_t" ng-maxlength="20" required>
+    </div>
+    <div class="row">
+      <label for="content">Content</label>
+    </div>
+    <div>
+      <input class="form-control" name="content" id="content" ng-model="t.input_c" ng-maxlength="60" value="53304220123455505330422013551" required></input> 
+    </div>
+    <div style="margin-top: 15px;" class="row">
+      <button style="margin-right:20px; float: right" class="btn btn-primary" type="submit"  name="submit-btn" value="Submit">submit</button>
+      <button style="margin-right:20px; float: right" class="btn btn-primary" type="button" ng-click="download()">download</button>
+      <button style="margin-right:20px; float: right" class="btn btn-primary" type="button" ng-click="playPiano()">play</button>
+    </div>
+  </form>
+
+      <div>
+        
+      <canvas style="position: absolute;" id="note" width="610" height="400"></canvas> 
+      <canvas style="position: absolute;" id="shape" width="610" height="400"></canvas>  
+
+<audio id="mp3" src="/mp3/0.mp3" type="audio/mpeg" preload>
+Your browser does not support the audio element.
+</audio>
+
+<audio src="/mp3/1.mp3" type="audio/mpeg" muted="true" autoplay>
+Your browser does not support the audio element.
+</audio>
+<audio src="/mp3/2.mp3" type="audio/mpeg" muted="true" autoplay>
+Your browser does not support the audio element.
+</audio>
+<audio src="/mp3/3.mp3" type="audio/mpeg" muted="true" autoplay>
+Your browser does not support the audio element.
+</audio>
+<audio src="/mp3/4.mp3" type="audio/mpeg" muted="true" autoplay>
+Your browser does not support the audio element.
+</audio>
+<audio src="/mp3/5.mp3" type="audio/mpeg" muted="true" autoplay>
+Your browser does not support the audio element.
+</audio>
+<audio src="/mp3/6.mp3" type="audio/mpeg" muted="true" autoplay>
+Your browser does not support the audio element.
+</audio>
+<audio src="/mp3/7.mp3" type="audio/mpeg" muted="true" autoplay>
+Your browser does not support the audio element.
+</audio>
+      </div>         
+
+</div>
+
+<script src="/js/other.js"></script>
+
+<script>
+    function con($scope){
+        $scope.t = {
+          input_t: "title",
+          input_c: "53304220123455505330422013551",
+          lock:0
+         };
+         drawShape();
+      $scope.$watch("t.input_t", function(){
+           $scope.t.t = $scope.t.input_t;
+           if($scope.t.t === undefined)
+           {
+            $scope.t.t = "title";
+           }
+           drawShape();
+      });
+
+      $scope.$watch("t.input_c", function(){
+        $scope.t.c = $scope.t.input_c;
+           if($scope.t.c === undefined)
+           {
+            $scope.t.c = "0";
+           }
+          $scope.t.c = $scope.t.c.replace(/[^0-7-]/gi, "");
+          $scope.t.c = $scope.t.c.replace(/^-*/gi, "");
+          drawText(61);
+      });
+
+
+    function drawShape(){ 
+        var canvas = document.getElementById('shape'); 
+        if (canvas.getContext){ 
+
+          var ctx = canvas.getContext('2d'); 
+
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+              
+
+          var lines = 5;
+          var title = $scope.t.t;
+
+
+
+          ctx.translate(1, 40);
+          ctx.lineWidth = 2;
+      
+          ctx.textAlign = "center"; // left, center, right 
+          ctx.fillStyle = "black"; 
+          ctx.strokeStyle = "black"; 
+          ctx.font = "20px Optimer"; // 8, 10, 12, 16, 20, 24, 32, 40, 48, 54, 60 
+          ctx.textBaseline = "alphabetic"; // top, hanging, middle, alphabetic, ideographic, bottom 
+          ctx.fillText(title, 265, -20); 
+          for (var j = 0; j < lines; j++) 
+          {
+            draw44(ctx);
+
+            ctx.fillStyle = 'black';
+            ctx.strokeStyle = 'black';
+            drawTreble(ctx);
+            ctx.stroke();
+
+            ctx.rect(0, 1, staff_width, staff_offset*4);
+            ctx.strokeStyle = 'black';
+            ctx.stroke();
+        //y starts from 1 because the following method is fillRect. That is, omit border
+            for(var i=1; i<4; i++)
+            { 
+              var y_offset_staff = i * staff_offset; 
+              ctx.fillStyle = 'black';
+              ctx.fillRect(0,y_offset_staff,staff_width,staff_height); 
+            } //end for
+            ctx.translate(0, 70);
+          }//end for  
+            ctx.translate(-1, -40-70*lines);           
+        } else { 
+          alert('You need Firefox 1.5+, Google Chrome 8.0+, Internet Explorer 8.0+ or Safari 4.0+ to see the example.'); 
+        } 
+      } 
+
+
+    $scope.playPiano = function() {
+      var text = $scope.t.c; 
+      var len =text.length;
+      var mp3 = document.getElementById("mp3");
+      var i =0
+      var num=0;
+      
+      if($scope.t.lock == 0)
+      {
+        $scope.t.lock = 1;
+        var playing = setInterval(function(){
+
+          if(i==len)
+          {
+            clearInterval(playing); 
+            mp3.pause();
+            $scope.t.lock = 0;
+            drawText(61);
+          }//stop
+          else
+          {
+            num = i;
+            while( text[num]== "-" && num>0)
+            {
+              num--;
+            } 
+            drawText(i);
+            mp3.src = "/mp3/" + text[num] + ".mp3";
+            mp3.play();
+
+            i++;
+          }
+        }, 330);
+      }//end if lock
+    };
+
+
+    function drawText(red_num){ 
+
+      var text = $scope.t.c; 
+      var len = $scope.t.c.length;
+
+
+          var canvas = document.getElementById('note'); 
+          if (canvas.getContext){ 
+              var ctx = canvas.getContext('2d'); 
+               
+              var x = 600;  
+              var y = 500; 
+              var x_next = 40;
+              var y_error = 0;
+              var translate_y2 = 47;
+              var index=0;
+              var isRed = 0;
+              
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              ctx.translate(0, translate_y2); 
+              for (var i = 0; i < len; i++) {
+                index = i;
+                if(red_num == i)
+                {
+                  isRed = 1;
+                }
+                while(text.charAt(index)=="-" && index > 0)
+                {
+                  index = index - 1;
+                }
+
+                y_error = parseInt(text.charAt(index), 10);
+                ctx.translate(0,y_error*(-5)); 
+                drawNote(ctx,x,y, text.charAt(index), isRed); 
+                ctx.translate(x_next,y_error*5);
+
+                isRed = 0;//restore color
+                ctx.fillStyle = "black";
+                if(i%4==3) 
+                {
+
+              ctx.translate(50, -5); 
+              ctx.fillRect(0,0, 2, staff_offset*4);
+              ctx.translate(-50, 5); 
+              if(i%3 == 2)
+              {
+                ctx.translate( -x_next*12, 70); 
+              }
+
+                }
+              };//end for
+              ctx.translate(x_next*(-len%12) ,-translate_y2-parseInt( (len)/12, 10)*70); 
+              
+
+          } else { 
+              alert('You need Firefox 1.5+, Google Chrome 8.0+, Internet Explorer 8.0+ or Safari 4.0+ to see the example.'); 
+          } 
+      }//end drawtext 
+
+
+    $scope.download = function (){
+
+        var can1 = document.getElementById("note");
+        var can2 = document.getElementById("shape");
+        var can3 = document.createElement('canvas');
+
+        can3.width = 600;
+        can3.height = 400;
+        var ctx3 = can3.getContext('2d'); 
+        ctx3.fillStyle = 'white';
+        ctx3.fillRect(0, 0, 600, 400); 
+        ctx3.drawImage(can1, 20, 5);
+        ctx3.drawImage(can2, 20, 5);
+
+        if(can1.getContext && can2.getContext) {
+            var img = can3.toDataURL("image/png;base64;");
+            //img = img.replace("image/png","image/octet-stream"); // force download, user would have to give the file name.
+            // you can also use anchor tag with download attribute to force download the canvas with file name.
+            window.open(img,"","width=600,height=400");
+        }
+        else {
+             alert("Can not export");
+        }
+        
+    };
+
+    }//end con
+
+</script>

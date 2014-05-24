@@ -1,0 +1,57 @@
+{
+  "data": {
+    "post": [
+      {
+        "title": "title",
+        "content": "53304220123455505330422013551",
+        "createdAt": "2014-05-16T15:41:20.736Z",
+        "updatedAt": "2014-05-16T15:41:20.736Z",
+        "id": 12
+      },
+      {
+        "title": "1221121",
+        "content": "53304220123455505330422013551",
+        "createdAt": "2014-05-16T16:26:46.192Z",
+        "updatedAt": "2014-05-16T16:26:46.192Z",
+        "id": 13
+      },
+      {
+        "title": "222222",
+        "content": "53304220123455505330422013551",
+        "createdAt": "2014-05-16T16:27:09.197Z",
+        "updatedAt": "2014-05-16T16:27:09.197Z",
+        "id": 14
+      }
+    ]
+  },
+  "schema": {
+    "post": {
+      "title": {
+        "type": "string"
+      },
+      "content": {
+        "type": "string"
+      },
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "defaultsTo": "AUTO_INCREMENT",
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime",
+        "default": "NOW"
+      },
+      "updatedAt": {
+        "type": "datetime",
+        "default": "NOW"
+      }
+    }
+  },
+  "counters": {
+    "post": {
+      "id": 14
+    }
+  }
+}

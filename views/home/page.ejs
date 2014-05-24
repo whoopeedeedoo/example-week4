@@ -1,0 +1,20 @@
+<div  style="float:left; width:600px;" class="container">
+  <header>
+    <h1><%=post.title%></h1>
+  </header>
+  <article>
+    <div class="content">
+      <%= post.content %>
+    </div>
+    <div class="update">
+      <a href="/post/update/<%= post.id %>">update this</a>
+    </div>
+    <div class="destroy">
+      <a href="/post/destroy/<%= post.id %>">destroy this</a>
+    </div>
+    <div class="updateDate">
+      <%= post.updatedAt %>
+    </div>
+  </article>
+  <hr>
+</div>
